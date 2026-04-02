@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mermaid Flowchart Preview</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 12px 20px;
+      background: #181825;
+      border-bottom: 1px solid #313244;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #cba6f7;
+    }
+
+    .badge {
+      font-size: 11px;
+      background: #313244;
+      padding: 2px 8px;
+      border-radius: 999px;
+      color: #a6adc8;
+    }
+
+    .main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .editor-pane {
+      display: flex;
+      flex-direction: column;
+      width: 40%;
+      min-width: 280px;
+      border-right: 1px solid #313244;
+    }
+
+    .pane-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6c7086;
+      padding: 8px 14px;
+      background: #181825;
+      border-bottom: 1px solid #313244;
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border: none;
+      outline: none;
+      padding: 16px;
+      font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      tab-size: 2;
+    }
+
+    .preview-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .preview-toolbar {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6c7086;
+      padding: 8px 14px;
+      background: #181825;
+      border-bottom: 1px solid #313244;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn {
+      background: #313244;
+      border: none;
+      color: #cdd6f4;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      text-transform: none;
+      letter-spacing: normal;
+      transition: background 0.15s;
+    }
+
+    .btn:hover { background: #45475a; }
+
+    #preview-container {
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    #diagram {
+      max-width: 100%;
+    }
+
+    #diagram svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    #preview-container {
+      cursor: grab;
+    }
+
+    #preview-container:active {
+      cursor: grabbing;
+    }
+
+    #error-box {
+      display: none;
+      background: #1e1e2e;
+      border: 1px solid #f38ba8;
+      border-radius: 8px;
+      padding: 14px 18px;
+      color: #f38ba8;
+      font-family: monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      max-width: 600px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .status {
+      font-size: 11px;
+      padding: 0 14px 8px;
+      color: #6c7086;
+      background: #181825;
+    }
+
+    .status.ok { color: #a6e3a1; }
+    .status.err { color: #f38ba8; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Mermaid Preview</h1>
+  <span class="badge">live</span>
+</header>
+
+<div class="main">
+  <div class="editor-pane">
+    <div class="pane-label">Editor</div>
+    <textarea id="editor" spellcheck="false">flowchart TD
+    A([Start]) --> B{Is it working?}
+    B -- Yes --> C[Great!]
+    B -- No --> D[Debug]
+    D --> E[Fix the issue]
+    E --> B
+    C --> F([End])
+</textarea>
+    <div id="status" class="status ok">Ready</div>
+  </div>
+
+  <div class="preview-pane">
+    <div class="preview-toolbar">
+      <span>Preview</span>
+      <button class="btn" id="copy-svg-btn">Copy SVG</button>
+    </div>
+    <div id="preview-container">
+      <div id="diagram"></div>
+      <div id="error-box"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'dark',
+    securityLevel: 'loose',
+  });
+
+  const editor = document.getElementById('editor');
+  const diagram = document.getElementById('diagram');
+  const errorBox = document.getElementById('error-box');
+  const status = document.getElementById('status');
+  let debounceTimer;
+
+  // Preprocess common copy-paste issues before handing to Mermaid
+  function preprocess(code) {
+    // Replace literal \n inside node labels [...] and "..." with <br/>
+    return code.replace(/(\["|"\[|[\["])([^\]"]*?)\\n([^\]"]*?)("]|\])/g, (_, open, before, after, close) =>
+      `${open}${before}<br/>${after}${close}`
+    ).replace(/\[([^\]]*?)\\n([^\]]*?)\]/g, (_, before, after) =>
+      `[${before}<br/>${after}]`
+    );
+  }
+
+  async function render() {
+    const code = preprocess(editor.value.trim());
+    if (!code) return;
+
+    try {
+      diagram.removeAttribute('data-processed');
+      const id = 'mermaid-' + Date.now();
+      const { svg } = await mermaid.render(id, code);
+      diagram.innerHTML = svg;
+      diagram.style.display = 'block';
+      scale = 1;
+      diagram.style.transform = '';
+      errorBox.style.display = 'none';
+      status.textContent = 'Rendered OK';
+      status.className = 'status ok';
+    } catch (err) {
+      diagram.style.display = 'none';
+      errorBox.style.display = 'block';
+      errorBox.textContent = err.message || String(err);
+      status.textContent = 'Parse error';
+      status.className = 'status err';
+    }
+  }
+
+  editor.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(render, 300);
+  });
+
+  document.getElementById('copy-svg-btn').addEventListener('click', () => {
+    const svg = diagram.innerHTML;
+    if (!svg) return;
+    navigator.clipboard.writeText(svg).then(() => {
+      const btn = document.getElementById('copy-svg-btn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy SVG', 1500);
+    });
+  });
+
+  render();
+
+  // Zoom
+  let scale = 1;
+  const MIN_SCALE = 0.2;
+  const MAX_SCALE = 5;
+  const previewContainer = document.getElementById('preview-container');
+
+  previewContainer.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale + delta));
+    diagram.style.transform = `scale(${scale})`;
+    diagram.style.transformOrigin = 'center center';
+  }, { passive: false });
+</script>
+</body>
+</html>
