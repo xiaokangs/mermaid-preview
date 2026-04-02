@@ -10,8 +10,8 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #1e1e2e;
-      color: #cdd6f4;
+      background: #f8f9fa;
+      color: #202124;
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -19,8 +19,8 @@
 
     header {
       padding: 12px 20px;
-      background: #181825;
-      border-bottom: 1px solid #313244;
+      background: #ffffff;
+      border-bottom: 1px solid #dadce0;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -29,15 +29,15 @@
     header h1 {
       font-size: 16px;
       font-weight: 600;
-      color: #cba6f7;
+      color: #4285F4;
     }
 
     .badge {
       font-size: 11px;
-      background: #313244;
+      background: #e8f0fe;
       padding: 2px 8px;
       border-radius: 999px;
-      color: #a6adc8;
+      color: #1a73e8;
     }
 
     .main {
@@ -51,24 +51,24 @@
       flex-direction: column;
       width: 40%;
       min-width: 280px;
-      border-right: 1px solid #313244;
+      border-right: 1px solid #dadce0;
     }
 
     .pane-label {
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #6c7086;
+      color: #80868b;
       padding: 8px 14px;
-      background: #181825;
-      border-bottom: 1px solid #313244;
+      background: #ffffff;
+      border-bottom: 1px solid #dadce0;
     }
 
     textarea {
       flex: 1;
       resize: none;
-      background: #1e1e2e;
-      color: #cdd6f4;
+      background: #f8f9fa;
+      color: #202124;
       border: none;
       outline: none;
       padding: 16px;
@@ -89,19 +89,19 @@
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #6c7086;
+      color: #80868b;
       padding: 8px 14px;
-      background: #181825;
-      border-bottom: 1px solid #313244;
+      background: #ffffff;
+      border-bottom: 1px solid #dadce0;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .btn {
-      background: #313244;
+      background: #e8f0fe;
       border: none;
-      color: #cdd6f4;
+      color: #1a73e8;
       padding: 4px 12px;
       border-radius: 6px;
       font-size: 11px;
@@ -109,9 +109,10 @@
       text-transform: none;
       letter-spacing: normal;
       transition: background 0.15s;
+      font-weight: 500;
     }
 
-    .btn:hover { background: #45475a; }
+    .btn:hover { background: #d2e3fc; }
 
     #preview-container {
       flex: 1;
@@ -141,11 +142,11 @@
 
     #error-box {
       display: none;
-      background: #1e1e2e;
-      border: 1px solid #f38ba8;
+      background: #fce8e6;
+      border: 1px solid #f28b82;
       border-radius: 8px;
       padding: 14px 18px;
-      color: #f38ba8;
+      color: #c5221f;
       font-family: monospace;
       font-size: 12px;
       line-height: 1.5;
@@ -157,12 +158,12 @@
     .status {
       font-size: 11px;
       padding: 0 14px 8px;
-      color: #6c7086;
-      background: #181825;
+      color: #80868b;
+      background: #ffffff;
     }
 
-    .status.ok { color: #a6e3a1; }
-    .status.err { color: #f38ba8; }
+    .status.ok { color: #188038; }
+    .status.err { color: #c5221f; }
   </style>
 </head>
 <body>
@@ -204,7 +205,6 @@
     theme: 'base',
     securityLevel: 'loose',
     themeVariables: {
-      // Google brand colors: blue, red, yellow, green
       primaryColor: '#4285F4',
       primaryTextColor: '#ffffff',
       primaryBorderColor: '#1a73e8',
@@ -212,18 +212,16 @@
       secondaryTextColor: '#ffffff',
       secondaryBorderColor: '#188038',
       tertiaryColor: '#FBBC05',
-      tertiaryTextColor: '#1e1e2e',
+      tertiaryTextColor: '#202124',
       tertiaryBorderColor: '#f29900',
-      // Edges & lines
-      lineColor: '#9aa0a6',
-      edgeLabelBackground: '#1e1e2e',
-      // General
-      background: '#1e1e2e',
+      lineColor: '#5f6368',
+      edgeLabelBackground: '#ffffff',
+      background: '#ffffff',
       mainBkg: '#4285F4',
       nodeBorder: '#1a73e8',
-      clusterBkg: '#303134',
-      titleColor: '#e8eaed',
-      // Special node types
+      clusterBkg: '#e8f0fe',
+      clusterBorder: '#4285F4',
+      titleColor: '#202124',
       fillType0: '#4285F4',
       fillType1: '#EA4335',
       fillType2: '#FBBC05',
@@ -264,6 +262,7 @@
       scale = 1;
       diagram.style.transform = '';
       errorBox.style.display = 'none';
+      errorBox.textContent = '';
       status.textContent = 'Rendered OK';
       status.className = 'status ok';
     } catch (err) {
