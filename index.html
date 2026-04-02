@@ -268,7 +268,7 @@
       const { svg } = await mermaid.render(id, code);
       diagram.innerHTML = svg;
       diagram.style.display = 'block';
-      scale = 1;
+      scale = 1; tx = 0; ty = 0;
       diagram.style.transform = '';
       errorBox.style.display = 'none';
       errorBox.textContent = '';
@@ -300,19 +300,52 @@
 
   render();
 
-  // Zoom
+  // Zoom + Pan
   let scale = 1;
+  let tx = 0, ty = 0;
   const MIN_SCALE = 0.2;
   const MAX_SCALE = 5;
   const previewContainer = document.getElementById('preview-container');
 
+  function applyTransform() {
+    diagram.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+    diagram.style.transformOrigin = 'center center';
+  }
+
+  // Zoom toward cursor position
   previewContainer.addEventListener('wheel', (e) => {
     e.preventDefault();
+    const rect = previewContainer.getBoundingClientRect();
+    const cx = e.clientX - rect.left - rect.width / 2;
+    const cy = e.clientY - rect.top - rect.height / 2;
     const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale + delta));
-    diagram.style.transform = `scale(${scale})`;
-    diagram.style.transformOrigin = 'center center';
+    const newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale + delta));
+    const ratio = newScale / scale;
+    tx = cx + ratio * (tx - cx);
+    ty = cy + ratio * (ty - cy);
+    scale = newScale;
+    applyTransform();
   }, { passive: false });
+
+  // Pan by dragging
+  let dragging = false;
+  let dragStart = { x: 0, y: 0 };
+
+  previewContainer.addEventListener('pointerdown', (e) => {
+    dragging = true;
+    dragStart = { x: e.clientX - tx, y: e.clientY - ty };
+    previewContainer.setPointerCapture(e.pointerId);
+  });
+
+  previewContainer.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    tx = e.clientX - dragStart.x;
+    ty = e.clientY - dragStart.y;
+    applyTransform();
+  });
+
+  previewContainer.addEventListener('pointerup', () => { dragging = false; });
+  previewContainer.addEventListener('pointercancel', () => { dragging = false; });
 </script>
 </body>
 </html>
