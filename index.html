@@ -96,6 +96,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
     }
 
     .btn {
@@ -191,6 +192,7 @@
   <div class="preview-pane">
     <div class="preview-toolbar">
       <span>Preview</span>
+      <button class="btn" id="reset-view-btn">Reset View</button>
       <button class="btn" id="copy-svg-btn">Copy SVG</button>
     </div>
     <div id="preview-container">
@@ -286,6 +288,11 @@
   editor.addEventListener('input', () => {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(render, 300);
+  });
+
+  document.getElementById('reset-view-btn').addEventListener('click', () => {
+    scale = 1; tx = 0; ty = 0;
+    diagram.style.transform = '';
   });
 
   document.getElementById('copy-svg-btn').addEventListener('click', () => {
