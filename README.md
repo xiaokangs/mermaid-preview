@@ -2,6 +2,12 @@
 
 A fault-tolerant, browser-based Mermaid diagram previewer designed for pasting diagrams directly from LLM (ChatGPT, Claude, etc.) responses — without needing to manually fix common formatting issues.
 
+## Live Demo
+
+**[https://xiaokangs.github.io/mermaid-preview/](https://xiaokangs.github.io/mermaid-preview/)**
+
+No install needed — open the link and start pasting.
+
 ## Why this exists
 
 LLMs frequently generate Mermaid diagrams that look correct but fail to parse due to subtle issues:
