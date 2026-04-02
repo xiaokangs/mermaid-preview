@@ -201,8 +201,38 @@
 <script>
   mermaid.initialize({
     startOnLoad: false,
-    theme: 'dark',
+    theme: 'base',
     securityLevel: 'loose',
+    themeVariables: {
+      // Google brand colors: blue, red, yellow, green
+      primaryColor: '#4285F4',
+      primaryTextColor: '#ffffff',
+      primaryBorderColor: '#1a73e8',
+      secondaryColor: '#34A853',
+      secondaryTextColor: '#ffffff',
+      secondaryBorderColor: '#188038',
+      tertiaryColor: '#FBBC05',
+      tertiaryTextColor: '#1e1e2e',
+      tertiaryBorderColor: '#f29900',
+      // Edges & lines
+      lineColor: '#9aa0a6',
+      edgeLabelBackground: '#1e1e2e',
+      // General
+      background: '#1e1e2e',
+      mainBkg: '#4285F4',
+      nodeBorder: '#1a73e8',
+      clusterBkg: '#303134',
+      titleColor: '#e8eaed',
+      // Special node types
+      fillType0: '#4285F4',
+      fillType1: '#EA4335',
+      fillType2: '#FBBC05',
+      fillType3: '#34A853',
+      fillType4: '#fa7b17',
+      fillType5: '#f439a0',
+      fillType6: '#a142f4',
+      fillType7: '#24c1e0',
+    },
   });
 
   const editor = document.getElementById('editor');
