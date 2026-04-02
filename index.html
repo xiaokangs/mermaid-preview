@@ -243,12 +243,19 @@
 
   // Preprocess common copy-paste issues before handing to Mermaid
   function preprocess(code) {
-    // Replace literal \n inside node labels [...] and "..." with <br/>
-    return code.replace(/(\["|"\[|[\["])([^\]"]*?)\\n([^\]"]*?)("]|\])/g, (_, open, before, after, close) =>
-      `${open}${before}<br/>${after}${close}`
-    ).replace(/\[([^\]]*?)\\n([^\]]*?)\]/g, (_, before, after) =>
-      `[${before}<br/>${after}]`
-    );
+    return code
+      // Replace literal \n inside node labels with <br/>
+      .replace(/(\["|"\[|[\["])([^\]"]*?)\\n([^\]"]*?)("]|\])/g, (_, open, before, after, close) =>
+        `${open}${before}<br/>${after}${close}`
+      )
+      .replace(/\[([^\]]*?)\\n([^\]]*?)\]/g, (_, before, after) =>
+        `[${before}<br/>${after}]`
+      )
+      // Auto-quote unquoted diamond {labels} containing parentheses to prevent
+      // Mermaid from misreading ( as a stadium-node token
+      .replace(/\{([^"{}]*\([^"{}]*)\}/g, (_, content) => `{"${content}"}`)
+      // Auto-quote unquoted box [labels] containing parentheses for the same reason
+      .replace(/(?<!\[)\[([^"[\]]*\([^"[\]]*)\](?!\])/g, (_, content) => `["${content}"]`);
   }
 
   async function render() {
