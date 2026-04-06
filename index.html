@@ -9,35 +9,43 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f8f9fa;
-      color: #202124;
+      font-family: "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
       height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
     header {
-      padding: 12px 20px;
-      background: #ffffff;
-      border-bottom: 1px solid #dadce0;
+      height: 48px;
+      padding: 0 20px;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-shrink: 0;
+      z-index: 10;
     }
 
     header h1 {
-      font-size: 16px;
+      font-family: "SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 17px;
       font-weight: 600;
-      color: #4285F4;
+      letter-spacing: -0.374px;
+      color: #ffffff;
     }
 
     .badge {
-      font-size: 11px;
-      background: #e8f0fe;
-      padding: 2px 8px;
-      border-radius: 999px;
-      color: #1a73e8;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.12px;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 2px 10px;
+      border-radius: 980px;
+      color: rgba(255, 255, 255, 0.72);
     }
 
     .main {
@@ -51,24 +59,25 @@
       flex-direction: column;
       width: 40%;
       min-width: 280px;
-      border-right: 1px solid #dadce0;
+      border-right: 1px solid rgba(0, 0, 0, 0.08);
+      background: #f5f5f7;
     }
 
     .pane-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #80868b;
-      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.12px;
+      color: rgba(0, 0, 0, 0.48);
+      padding: 8px 16px;
       background: #ffffff;
-      border-bottom: 1px solid #dadce0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
     }
 
     textarea {
       flex: 1;
       resize: none;
-      background: #f8f9fa;
-      color: #202124;
+      background: #f5f5f7;
+      color: #1d1d1f;
       border: none;
       outline: none;
       padding: 16px;
@@ -86,13 +95,14 @@
     }
 
     .preview-toolbar {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #80868b;
-      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.12px;
+      color: rgba(0, 0, 0, 0.48);
+      padding: 0 16px;
+      height: 36px;
       background: #ffffff;
-      border-bottom: 1px solid #dadce0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -100,41 +110,34 @@
     }
 
     .btn {
-      background: #e8f0fe;
+      background: #0071e3;
       border: none;
-      color: #1a73e8;
-      padding: 4px 12px;
-      border-radius: 6px;
-      font-size: 11px;
+      color: #ffffff;
+      padding: 5px 14px;
+      border-radius: 8px;
+      font-family: "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: -0.224px;
       cursor: pointer;
-      text-transform: none;
-      letter-spacing: normal;
-      transition: background 0.15s;
-      font-weight: 500;
+      transition: filter 0.15s;
     }
 
-    .btn:hover { background: #d2e3fc; }
+    .btn:hover { filter: brightness(1.1); }
+    .btn:active { filter: brightness(0.92); }
+
+    .btn-secondary {
+      background: #1d1d1f;
+    }
 
     #preview-container {
       flex: 1;
-      overflow: auto;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 24px;
-      background: #e8f0fe;
-    }
-
-    #diagram {
-      max-width: 100%;
-    }
-
-    #diagram svg {
-      max-width: 100%;
-      height: auto;
-    }
-
-    #preview-container {
+      background: #f5f5f7;
       cursor: grab;
     }
 
@@ -142,30 +145,53 @@
       cursor: grabbing;
     }
 
+    #diagram {
+      max-width: 100%;
+      filter: drop-shadow(rgba(0, 0, 0, 0.12) 0px 4px 24px);
+    }
+
+    #diagram svg {
+      max-width: 100%;
+      height: auto;
+    }
+
     #error-box {
       display: none;
-      background: #fce8e6;
-      border: 1px solid #f28b82;
+      background: #ffffff;
       border-radius: 8px;
-      padding: 14px 18px;
-      color: #c5221f;
-      font-family: monospace;
-      font-size: 12px;
-      line-height: 1.5;
+      padding: 16px 20px;
+      color: #1d1d1f;
+      font-family: "SF Pro Text", "Helvetica Neue", Helvetica, monospace;
+      font-size: 13px;
+      line-height: 1.47;
+      letter-spacing: -0.224px;
       max-width: 600px;
       white-space: pre-wrap;
       word-break: break-word;
+      box-shadow: rgba(0, 0, 0, 0.22) 3px 5px 30px 0px;
+    }
+
+    #error-box::before {
+      content: "Parse Error";
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.224px;
+      color: #ff3b30;
+      margin-bottom: 8px;
     }
 
     .status {
-      font-size: 11px;
-      padding: 0 14px 8px;
-      color: #80868b;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: -0.12px;
+      padding: 4px 16px 6px;
+      color: rgba(0, 0, 0, 0.48);
       background: #ffffff;
     }
 
-    .status.ok { color: #188038; }
-    .status.err { color: #c5221f; }
+    .status.ok { color: #34c759; }
+    .status.err { color: #ff3b30; }
   </style>
 </head>
 <body>
@@ -192,7 +218,7 @@
   <div class="preview-pane">
     <div class="preview-toolbar">
       <span>Preview</span>
-      <button class="btn" id="reset-view-btn">Reset View</button>
+      <button class="btn btn-secondary" id="reset-view-btn">Reset View</button>
       <button class="btn" id="copy-svg-btn">Copy SVG</button>
     </div>
     <div id="preview-container">
@@ -208,32 +234,32 @@
     theme: 'base',
     securityLevel: 'loose',
     themeVariables: {
-      primaryColor: '#4285F4',
-      primaryTextColor: '#202124',
-      primaryBorderColor: '#1a73e8',
-      secondaryColor: '#34A853',
-      secondaryTextColor: '#202124',
-      secondaryBorderColor: '#188038',
-      tertiaryColor: '#FBBC05',
-      tertiaryTextColor: '#202124',
-      tertiaryBorderColor: '#f29900',
-      lineColor: '#5f6368',
-      edgeLabelBackground: '#ffffff',
+      primaryColor: '#0071e3',
+      primaryTextColor: '#ffffff',
+      primaryBorderColor: '#0071e3',
+      secondaryColor: '#34c759',
+      secondaryTextColor: '#ffffff',
+      secondaryBorderColor: '#34c759',
+      tertiaryColor: '#ff9f0a',
+      tertiaryTextColor: '#ffffff',
+      tertiaryBorderColor: '#ff9f0a',
+      lineColor: '#1d1d1f',
+      edgeLabelBackground: '#f5f5f7',
       background: '#ffffff',
-      mainBkg: '#4285F4',
-      nodeBorder: '#1a73e8',
-      clusterBkg: '#e8f0fe',
-      clusterBorder: '#4285F4',
-      titleColor: '#202124',
-      nodeTextColor: '#202124',
-      fillType0: '#4285F4',
-      fillType1: '#EA4335',
-      fillType2: '#FBBC05',
-      fillType3: '#34A853',
-      fillType4: '#fa7b17',
-      fillType5: '#f439a0',
-      fillType6: '#a142f4',
-      fillType7: '#24c1e0',
+      mainBkg: '#0071e3',
+      nodeBorder: '#0071e3',
+      clusterBkg: '#f5f5f7',
+      clusterBorder: 'rgba(0,0,0,0.12)',
+      titleColor: '#1d1d1f',
+      nodeTextColor: '#ffffff',
+      fillType0: '#0071e3',
+      fillType1: '#ff3b30',
+      fillType2: '#ff9f0a',
+      fillType3: '#34c759',
+      fillType4: '#5ac8fa',
+      fillType5: '#af52de',
+      fillType6: '#ff2d55',
+      fillType7: '#30b0c7',
     },
   });
 
