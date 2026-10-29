@@ -2,11 +2,11 @@
 
 ## Project overview
 
-Single-file (`index.html`) browser app for previewing Mermaid diagrams. No build step, no dependencies beyond Mermaid.js loaded from CDN. Designed for pasting diagrams directly from LLM responses, which often contain subtle syntax errors.
+Zero-build, single-page Mermaid previewer for pasting diagrams from LLM output — see [README.md](README.md) for what it does, the architecture diagram and directory layout.
 
 ## Architecture
 
-Everything lives in `index.html`:
+App code lives in `index.html`; tests in `tests/`:
 - **CSS** — Apple design system styling (SF Pro fonts, `#f5f5f7` backgrounds, dark glass nav)
 - **HTML** — split-pane layout: editor (40%) + preview (60%)
 - **JS** — preprocess → render → zoom/pan
@@ -15,9 +15,9 @@ Everything lives in `index.html`:
 
 ### Preprocessor (`preprocess()`)
 Runs before every Mermaid render. Current fixes:
-- Literal `\n` inside node labels → `<br/>`
-- Unquoted `{labels with (parens)}` → `{"labels with (parens)"}` to prevent stadium-token parse error
-- Unquoted `[labels with (parens)]` → `["labels with (parens)"]` for same reason
+- Every literal `\n` inside a single-line `[...]` label → `<br/>` (`{}` / `()` labels are not touched)
+- Unquoted single-line `{labels with (parens)}` → `{"labels with (parens)"}` to prevent stadium-token parse error (multi-line classDiagram bodies are left alone)
+- Unquoted `[labels with (parens)]` → `["labels with (parens)"]` for same reason; skips `[[subroutine]]`, cylinder `[(...)]` and trapezoid `[/...]` / `[\...]` shapes
 
 When adding new preprocessing rules, keep them in this function and add a comment explaining what input pattern it fixes.
 
@@ -31,26 +31,26 @@ Do not switch away from `theme: 'base'` — other themes override `themeVariable
 
 ### Zoom + Pan
 - State: `scale`, `tx`, `ty` — applied as `translate(tx, ty) scale(scale)` on `#diagram`
+- Declared before `render()` (avoid TDZ); `resetView()` is shared by render and the Reset View button
 - Scroll to zoom toward cursor (0.2x – 30x)
 - Pointer drag to pan
 - Reset on new render and on "Reset View" button click
 
 ## Design system
 
-UI references the Apple design system (summary in README "Design trade-offs", details in [docs/design.md](docs/design.md)), with some deliberate deviations. Key rules:
-- Header: `rgba(0,0,0,0.8)` + `backdrop-filter: saturate(180%) blur(20px)`, 48px height
-- Backgrounds: `#f5f5f7` (page/pane), `#ffffff` (toolbars/labels)
-- Typography: SF Pro Display (headings) / SF Pro Text (body), negative letter-spacing at all sizes
-- Buttons: Apple Blue `#0071e3` (primary), `#1d1d1f` (secondary), 8px radius
-- Borders: `rgba(0,0,0,0.08)` hairlines only — no solid borders
-- Interactive elements use only `#0071e3`; status and error messages may use the system semantic colors `#34c759` / `#ff3b30`
+Design rules and the intentional deviations from Apple's spec are in [docs/design.md](docs/design.md) — don't "fix" the deviations back to the Apple spec.
 
-Intentional deviations from Apple's generic spec — do not "fix" these to match it:
-- Hairline dividers (`1px solid rgba(0,0,0,0.08)`) between panes and under the pane label/toolbar — an editor UI needs visible separation
-- Red/green semantic colors on the status bar and error box — render status needs them
-- Compact `.btn` (`padding: 5px 14px`, 13px) — toolbar buttons must fit the 36px toolbar
-- Header `h1` is 17px SF Pro Display (spec says Display only at 20px+)
-- `#diagram` has its own `drop-shadow` in addition to the error box's card shadow
+## Tests / environment facts
+
+How to install and run: see README "Tests". Constraints that matter when editing `index.html`:
+- `tests/conftest.py` intercepts the Mermaid CDN request and serves `FAKE_MERMAID_JS` (records `window.__mermaid.initConfig` / `window.__mermaid.calls`); the clipboard is stubbed into `window.__copied`. No network needed.
+- e2e tests rely on globals `preprocess`, `scale`, `tx`, `ty` (read and written directly) — keep them top-level, don't wrap them in a closure/module.
+- e2e tests assert the text of `#status` ("Rendered OK" / "Parse error"), `#error-box` and `#copy-svg-btn` ("Copy SVG" / "Copied!").
+
+## Status / next steps
+
+- Status: live at the GitHub Pages URL in README; preprocess rules, zoom/pan and Copy SVG covered by tests.
+- Next: possibly extend the `\n` → `<br/>` rule to `{}` / `()` labels (update README table and tests with it); add `:focus-visible` styles if keyboard focus states are wanted.
 
 ## What to avoid
 

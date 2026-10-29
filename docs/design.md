@@ -11,7 +11,7 @@ The UI borrows from Apple's web design language: near-white neutrals, a single b
 - **Black 48%** (`rgba(0, 0, 0, 0.48)`): tertiary text — pane labels, toolbar text, neutral status.
 
 ### Interactive
-- **Apple Blue** (`#0071e3`): primary buttons and focus states. The only accent color for interactive elements.
+- **Apple Blue** (`#0071e3`): primary buttons. The only accent color for interactive elements.
 
 ### Semantic (status only — see deviations)
 - **Green** (`#34c759`): "Rendered OK" status.
