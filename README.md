@@ -42,6 +42,10 @@ This tool silently fixes those issues before rendering, so you can paste and pre
 | `(parens)` inside `{diamond}` nodes | Label auto-quoted to prevent stadium-token parse error |
 | `(parens)` inside `[box]` nodes | Label auto-quoted for the same reason |
 
+## Design trade-offs
+
+The UI borrows from Apple's design language — `#f5f5f7` neutrals, a single blue (`#0071e3`) for interactive elements, SF Pro with negative tracking, and a dark translucent glass header. It deliberately deviates where an editor tool needs it: hairline pane dividers, red/green status colors, compact toolbar buttons, a 17px display-font title, and a drop shadow on the diagram. Palette, typography and the full list of deviations are in [docs/design.md](docs/design.md).
+
 ## Hosting
 
 This is a static single-file app. Host it anywhere:

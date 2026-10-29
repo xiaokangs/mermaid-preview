@@ -37,13 +37,20 @@ Do not switch away from `theme: 'base'` — other themes override `themeVariable
 
 ## Design system
 
-UI follows `DESIGN.md` (Apple design system). Key rules:
+UI references the Apple design system (summary in README "Design trade-offs", details in [docs/design.md](docs/design.md)), with some deliberate deviations. Key rules:
 - Header: `rgba(0,0,0,0.8)` + `backdrop-filter: saturate(180%) blur(20px)`, 48px height
 - Backgrounds: `#f5f5f7` (page/pane), `#ffffff` (toolbars/labels)
 - Typography: SF Pro Display (headings) / SF Pro Text (body), negative letter-spacing at all sizes
 - Buttons: Apple Blue `#0071e3` (primary), `#1d1d1f` (secondary), 8px radius
 - Borders: `rgba(0,0,0,0.08)` hairlines only — no solid borders
-- Single accent color: `#0071e3` — do not introduce other UI accent colors
+- Interactive elements use only `#0071e3`; status and error messages may use the system semantic colors `#34c759` / `#ff3b30`
+
+Intentional deviations from Apple's generic spec — do not "fix" these to match it:
+- Hairline dividers (`1px solid rgba(0,0,0,0.08)`) between panes and under the pane label/toolbar — an editor UI needs visible separation
+- Red/green semantic colors on the status bar and error box — render status needs them
+- Compact `.btn` (`padding: 5px 14px`, 13px) — toolbar buttons must fit the 36px toolbar
+- Header `h1` is 17px SF Pro Display (spec says Display only at 20px+)
+- `#diagram` has its own `drop-shadow` in addition to the error box's card shadow
 
 ## What to avoid
 
